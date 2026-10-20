@@ -53,7 +53,7 @@ export class InMemoryChatStorage extends ChatStorage {
   ): Promise<ConversationMessage[]> {
     const allMessages: TimestampedMessage[] = [];
     for (const [key, messages] of this.conversations.entries()) {
-      const [storedUserId, storedSessionId, agentId] = key.split('#');
+      const [storedUserId, storedSessionId, agentId] = JSON.parse(key) as [string, string, string];
       if (storedUserId === userId && storedSessionId === sessionId) {
         // Add messages with their associated agentId
         allMessages.push(...messages.map(message => ({
@@ -70,7 +70,7 @@ export class InMemoryChatStorage extends ChatStorage {
   }
 
   private generateKey(userId: string, sessionId: string, agentId: string): string {
-    return `${userId}#${sessionId}#${agentId}`;
+    return JSON.stringify([userId, sessionId, agentId]);
   }
 
   private removeTimestamps(messages: TimestampedMessage[]): ConversationMessage[] {

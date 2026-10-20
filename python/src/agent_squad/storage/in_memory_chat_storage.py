@@ -1,5 +1,6 @@
 from typing import Optional, Union
 import time
+import json
 from collections import defaultdict
 from agent_squad.storage import ChatStorage
 from agent_squad.types import ConversationMessage, TimestampedMessage
@@ -87,7 +88,7 @@ class InMemoryChatStorage(ChatStorage):
     ) -> list[ConversationMessage]:
         all_messages = []
         for key, messages in self.conversations.items():
-            stored_user_id, stored_session_id, agent_id = key.split('#')
+            stored_user_id, stored_session_id, agent_id = json.loads(key)
             if stored_user_id == user_id and stored_session_id == session_id:
                 for message in messages:
                     new_content = message.content if message.content else []
@@ -106,7 +107,7 @@ class InMemoryChatStorage(ChatStorage):
 
     @staticmethod
     def _generate_key(user_id: str, session_id: str, agent_id: str) -> str:
-        return f"{user_id}#{session_id}#{agent_id}"
+        return json.dumps([user_id, session_id, agent_id], ensure_ascii=False, separators=(",", ":"))
 
     @staticmethod
     def _remove_timestamps(messages: list[dict]) -> list[ConversationMessage]:
