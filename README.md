@@ -483,3 +483,24 @@ This project is licensed under the Apache 2.0 licence - see the [LICENSE](https:
 ## 📄 Font License
 This project uses the JetBrainsMono NF font, licensed under the SIL Open Font License 1.1.
 For full license details, see [FONT-LICENSE.md](https://github.com/JetBrains/JetBrainsMono/blob/master/OFL.txt).
+
+
+## In-memory conversation identifiers
+
+The in-memory storage uses structured keys for each user/session/agent tuple
+in both Python and TypeScript. Identifiers containing `#`, quotes, backslashes,
+Unicode, or empty strings remain distinct and round-trip through per-agent and
+aggregate history reads. This changes only the ephemeral in-memory key format;
+persistent storage backends keep their existing formats.
+
+After setting up the project's test dependencies, run the focused regressions:
+
+```shell
+cd python
+PYTHONPATH=src python3 -B -m unittest discover -s src/tests/storage -p test_memory_namespace.py -v
+```
+
+```shell
+cd typescript
+npm test -- --runInBand tests/storage/MemoryChatStorage.namespace.test.ts
+```

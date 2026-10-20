@@ -1,3 +1,4 @@
+import json
 import pytest
 from unittest.mock import patch
 from agent_squad.types import ConversationMessage, TimestampedMessage
@@ -112,7 +113,7 @@ async def test_trim_conversation(storage):
 
 def test_generate_key():
     key = InMemoryChatStorage._generate_key("user1", "session1", "agent1")
-    assert key == "user1#session1#agent1"
+    assert json.loads(key) == ["user1", "session1", "agent1"]
 
 def test_remove_timestamps():
     timestamped_messages = [
